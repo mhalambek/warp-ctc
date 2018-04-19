@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """setup.py script for warp-ctc TensorFlow wrapper"""
 
 from __future__ import print_function
@@ -61,7 +62,9 @@ warp_ctc_includes = [os.path.join(root_path, '../include')]
 include_dirs = tf_includes + warp_ctc_includes
 
 if tf.__version__ >= '1.4':
-  include_dirs += ['/usr/lib/python3.6/site-packages/external/nsync']
+  include_dirs += [
+      '/home/mhala/.local/lib/python3.6/site-packages/external/nsync'
+  ]
 
 if os.getenv("TF_CXX11_ABI") is not None:
   TF_CXX11_ABI = os.getenv("TF_CXX11_ABI")
@@ -116,6 +119,10 @@ for loc in include_dirs:
     sys.exit(1)
 
 lib_srcs = ['src/ctc_op_kernel.cc', 'src/warpctc_op.cc']
+
+TF_CFLAGS = tf.sysconfig.get_compile_flags()
+TF_LFLAGS = tf.sysconfig.get_link_flags()
+extra_link_args = TF_CFLAGS + TF_LFLAGS
 
 ext = setuptools.Extension(
     'warpctc_tensorflow.kernels',
